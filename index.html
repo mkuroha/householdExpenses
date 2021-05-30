@@ -2,17 +2,18 @@
 <html lang="ja">
   <head>
     <title>Small Expense</title>
+    <!-- BootStrapを利用 -->
     <base target=”_top”>
     <?!= include("css"); ?>
   </head>
   <body>
     <section id="header">
-      <h1>Small Expense</h1>
+      <h1>Household Expense</h1>
       <h3><?= new Date().getMonth() + 1; ?>月の合計出費：<?= calcSum(data); ?>円</h3>
     </section>
 
     <div class="cp_iptxt">
-      <form method="post" action="https://script.google.com/macros/s/AKfycbws7-emdJKAPGc3rytlzVSFdz4feExatx3CyIdQQ8NRXyeuURgo4ZKm/exec?p=index">
+      <form method="post" action="https://script.google.com/macros/s/AKfycbykc1FO_oZsrDzcdAadeL6LT94tmWAhNNZkdV-a854AevAOa5jOuuxsorYwA19up-2w/exec?p=index">
         <label class="ef">
           <input type="text" name="expense" placeholder="用途"><br>
           <input type="text" name="val" placeholder="金額（円）">
