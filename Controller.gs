@@ -1,56 +1,43 @@
 // ページにアクセスがあったときに呼び出される
 function doGet(e){
-  var page = e.parameter["p"];
+  var model = new modelClass(); // モデルのクラス．データの更新や削除を行う
+  var view = new viewClass(); // ビューのクラス．HTMLの作成を行う
+  var pageName = e.parameter["p"];
+  var todayYearMonth = getYearAndMonthOfToday();
 
-  var todayYearMonth = getTodayYearAndMonth();
-  if(page == "index" || page==null){
-    var html = HtmlService.createTemplateFromFile("index");
-    html.data = getSpreadSheetData(todayYearMonth);
-    html = html.evaluate();
-    html.addMetaTag("viewport", "width=device-width, initial-scale=1");
-    return html;
-  }else{
-    var html = HtmlService.createHtmlOutputFromFile(page);
-    html.data = getSpreadSheetData(todayYearMonth);
-    html = html.evaluate();
-    html.addMetaTag("viewport", "width=device-width, initial-scale=1");
-    return html;
+  // HTML 振り分け
+  if(pageName == null){ // POST後
+    return view.createHTML("add", model.getData());
+  } else if (pageName == "list"){
+    return view.createHTML("list", model.getData());
   }
 }
 
 // post時に呼び出される．データの更新など
 function doPost(postdata){
-  // <input type="submit">がクリックされたときに実行される関数
-  // フォームからの返り値を引数としてpostdataで受け取る
-  var expense = postdata.parameter.expense;
-  var val = postdata.parameter.val;
-
-  var today = new Date();
-  var todayYear = today.getFullYear().toString();
-  var todayMonth = today.getMonth() + 1;
-  if (todayMonth.toString().length == 1){
-    todayMonth = "0" + todayMonth
-  }
-  var todayDate = today.getDate();
-  if (todayDate.toString().length == 1){
-    todayDate = "0" + todayDate;
-  }
-  logDate = todayYear + "-" + todayMonth + "-" + todayDate;
-
-  var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
-  var sheet = spreadsheet.getSheetByName(todayYear+todayMonth);
-  if (expense=="" || val=="" || isNaN(Number(val))) {
+  var model = new modelClass(); // モデルのクラス．データの更新や削除を行う
+  var view = new viewClass(); // ビューのクラス．HTMLの作成を行う
+  
+  // フォームからの返り値を引数として postdata で受け取る
+  var element = postdata.parameter.element;
+  var expense = postdata.parameter.expense; // 用途
+  var value = postdata.parameter.value; // 金額
+  
+  // スプレッドシートにデータを追加
+  // javascriptでフォーム入力のバリデーション
+  // https://qiita.com/tamtam0847/items/8b79754bb10fe58a01a3
+  if (expense=="" || value=="" || isNaN(Number(value))) {
     ;
-  }else if(Number.isInteger(val)){
+  }else if(Number.isInteger(value)){
     ;
   }else{
-    sheet.appendRow([logDate, expense, val]);
+    logDate = createLogDate();
+    var arr = {"element": element, "expense": expense, "value": value};
+    model.insertData(arr);
   }
 
   // ページの表示
-  var html = HtmlService.createTemplateFromFile("index");
-  html.data = getSpreadSheetData(todayYear + todayMonth);
-  html = html.evaluate();
-  html.addMetaTag("viewport", "width=device-width, initial-scale=1");
-  return html;
+  return view.createHTML("list", model.getData(getYearAndMonthOfToday()));
 }
+
+

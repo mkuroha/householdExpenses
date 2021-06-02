@@ -20,6 +20,20 @@ function getYearAndMonthOfToday(){
   return todayYear + todayMonth;
 }
 
+function createLogDate() {
+  var today = new Date();
+  var todayYear = today.getFullYear().toString();
+  var todayMonth = today.getMonth() + 1;
+  if (todayMonth.toString().length == 1){
+    todayMonth = "0" + todayMonth
+  }
+  var todayDate = today.getDate();
+  if (todayDate.toString().length == 1){
+    todayDate = "0" + todayDate;
+  }
+  return todayYear + "/" + todayMonth + "/" + todayDate;
+}
+
 function calcSum(dat){
   var expenseSum = 0;
   if (dat[0] != ""){
@@ -28,4 +42,9 @@ function calcSum(dat){
     }
   }
   return expenseSum;
+}
+
+function include(filename) {
+  // htmlの内容を文字列で取得する．css.htmlを取得して反映させる．
+  return HtmlService.createHtmlOutputFromFile(filename).getContent();
 }

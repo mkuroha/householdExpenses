@@ -2,36 +2,33 @@
 <html lang="ja">
   <head>
     <title>Small Expense</title>
-    <!-- BootStrapを利用 -->
-    <base target=”_top”>
+    <!-- <base target=”_top”> -->
+    <base target=”_self”>
     <?!= include("css"); ?>
   </head>
   <body>
-    <section id="header">
-      <h1>Household Expense</h1>
+    <!-- ナビゲーションバー -->
+    <nav class="navbar navbar-light bg-light">
+      <div class="container-fluid">
+        <span class="navbar-text">
+          Household Expense
+        </span>
+      </div>
+    </nav>
+    
+    <section id="spendingSum">
       <h3><?= new Date().getMonth() + 1; ?>月の合計出費：<?= calcSum(data); ?>円</h3>
     </section>
-
-    <div class="cp_iptxt">
-      <form method="post" action="https://script.google.com/macros/s/AKfycbykc1FO_oZsrDzcdAadeL6LT94tmWAhNNZkdV-a854AevAOa5jOuuxsorYwA19up-2w/exec?p=index">
-        <label class="ef">
-          <input type="text" name="expense" placeholder="用途"><br>
-          <input type="text" name="val" placeholder="金額（円）">
-        </label>
-        <input class="click-down" type="submit" value="追加">
-      </form>
-    </div>
-    <br>
-
+    
     <h4 id="listTitle">出費リスト</h4>
     <section id="expenseList">
       <table>
-        <?
+        <!-- <?
           if (data[0] != ""){ 
             for (var i=0; i<data.length; i++){
               output._ = '<tr><td>' + Utilities.formatDate(data[i][0], "JST", "yyyy-MM-dd") + '</td><td>' + data[i][1] + '</td><td>' + data[i][2] + '円</td></tr>';
             }}
-        ?>
+        ?> -->
       </table>
     </section>
   </body>
