@@ -2,34 +2,34 @@
 <html lang="ja">
   <head>
     <title>Small Expense</title>
-    <!-- <base target=”_top”> -->
-    <base target=”_self”>
+    <base target=”_top”>
     <?!= include("css"); ?>
   </head>
   <body>
     <!-- ナビゲーションバー -->
-    <nav class="navbar navbar-light bg-light">
-      <div class="container-fluid">
-        <span class="navbar-text">
-          Household Expense
-        </span>
+    <?!= include("header"); ?>
+    <div class="container mx-auto">
+      <div class="row">
+        <table class="table table-striped">
+          <thead>
+          <tr>
+            <td><b>出費種類</b></td>
+            <td><b>小計</b></td>
+            <td><b>目標値</b></td>
+          </tr>
+          </thead>
+
+          <tbody>
+            <?
+                for (var i = 0; i<expenseItems.length; i++){
+                  output._ = '<tr><td><a href="https://script.google.com/macros/s/AKfycbykc1FO_oZsrDzcdAadeL6LT94tmWAhNNZkdV-a854AevAOa5jOuuxsorYwA19up-2w/exec?element=' + expenseItems[i] + '">' + expenseItems[i] + '</a></td><td>' + calcSum(expenseData[expenseItems[i]]) + '円</td><td>' + expectedData[i] + '円</td></tr>';
+                }
+            ?>
+          </tbody>
+        </table>
       </div>
-    </nav>
-    
-    <section id="spendingSum">
-      <h3><?= new Date().getMonth() + 1; ?>月の合計出費：<?= calcSum(data); ?>円</h3>
-    </section>
-    
-    <h4 id="listTitle">出費リスト</h4>
-    <section id="expenseList">
-      <table>
-        <!-- <?
-          if (data[0] != ""){ 
-            for (var i=0; i<data.length; i++){
-              output._ = '<tr><td>' + Utilities.formatDate(data[i][0], "JST", "yyyy-MM-dd") + '</td><td>' + data[i][1] + '</td><td>' + data[i][2] + '円</td></tr>';
-            }}
-        ?> -->
-      </table>
-    </section>
+    </div>
   </body>
 </html>
+
+

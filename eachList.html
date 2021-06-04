@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <title>Small Expense</title>
+    <base target=”_top”>
+    <?!= include("css"); ?>
+  </head>
+  <body>
+    <!-- ナビゲーションバー -->
+    <?!= include("header"); ?>
+
+    <div class="container mx-auto">
+      <div class="row">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <td><b><?=elementName?></b></td>
+              <td><b>金額</b></td>
+            </tr>
+          </thead>
+          <tbody>
+            <?
+                for (var i = 0; i<expenseData.length; i++){
+                  output._ = '<tr><td>' + expenseData[i][0] + '</td><td>' + expenseData[i][1] + '円</td></tr>';
+                }
+            ?>
+          </tbody>
+          
+        </table>
+      </div>
+    </div>
+  </body>
+</html>
+
+
