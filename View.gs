@@ -2,19 +2,37 @@
 function viewClass() {
   var model = new modelClass(); // モデルのクラス．データの更新や削除を行う
   
-  this.createHTML = function(pageName, selector) {
+  this.createHTML = function(pageName, param) {
     var html = HtmlService.createTemplateFromFile(pageName);
     if (pageName == "add"){
-      html.expenseItems = model.find("項目");
-    } else if (pageName == "list") {
-      html.expenseItems = model.find("項目");
+      html.elements = model.find("項目");
+    } 
+    else if(pageName == "list")
+    {
+      html.elements = model.find("項目");
       html.expenseData = model.findAll();
       html.expectedData = model.find("目標値");
-      Logger.log('model.find("目標値"): ' + model.find("目標値"));
-    } else {
-      html.elementName = selector;
-      html.expenseData = model.find(selector);
-      html.expectedData = model.getExpectedVal(selector);
+    }
+    else if(pageName == "edit")
+    {
+      html.elements = model.find("項目");
+      html.expenseData = model.findAll();
+      html.expectedData = model.find("目標値");
+    }
+    else if(pageName == "addElement")
+    {
+      
+    }
+    else if(pageName == "editElement")
+    {
+      html.elementName = param["element"];
+      html.expectedValue = param["expectedValue"];
+    }
+    else
+    {
+      html.elementName = param;
+      html.expenseData = model.find(param);
+      html.expectedData = model.getExpectedVal(param);
     }
 
     html = html.evaluate();

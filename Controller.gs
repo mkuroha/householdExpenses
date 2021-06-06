@@ -6,9 +6,25 @@ function doGet(e){
   // HTML 振り分け
   if(pageName == null){
     return view.createHTML("add", null);
-  } else if (pageName == "list"){
+  }
+  else if(pageName == "list")
+  {
     return view.createHTML("list", null);
-  } else {
+  }
+  else if (pageName == "edit")
+  {
+    return view.createHTML("edit", null);
+  }
+  else if (pageName == "addElement")
+  {
+    return view.createHTML("addElement", null);
+  }
+  else if (pageName == "editElement")
+  {
+    return view.createHTML("editElement", null);
+  }
+  else
+  {
     return view.createHTML("eachList", pageName);
   }
 }
@@ -20,7 +36,8 @@ function doPost(postData){
 
   var functionType = postData.parameter.functionType;
   // 処理振り分け
-  if (functionType == "insert") {
+  if (functionType == "insert") 
+  {
     // スプレッドシートにデータを追加
     var element = postData.parameter.element;
     var expense = postData.parameter.expense; // 用途
@@ -30,10 +47,27 @@ function doPost(postData){
     model.insertExpenseData(arr);
     return view.createHTML("list", null);
 
-  } else if (functionType == "edit") {
+  }
+  else if (functionType == "transitEditElement")
+  {
+    var element = postData.parameter.element;  // 出費項目
+    var expectedValue = postData.parameter.expectedValue; // 最大許容額
+    var params = {"element": element, "expectedValue": expectedValue};
+    return view.createHTML("editElement", params);
+  }
+  else if (functionType == "edit")
+  {
+    var oldElement = postData.parameter.oldElement;
+    var element = postData.parameter.element;
+    var expectedValue = postData.parameter.expectedValue; // 最大許容額
+    var arr = {"oldElement": oldElement, "element": element, "expectedValue": expectedValue};
+    model.updateElement(arr);  // 更新
 
+    return view.createHTML("list", null);
   
-  } else if (functionType == "remove") {
+  }
+  else if (functionType == "remove")
+  {
     var element = postData.parameter.element;
     var expenseIndex = postData.parameter.expenseIndex
     var arr = {"element": element, "expenseIndex": expenseIndex};
@@ -41,11 +75,21 @@ function doPost(postData){
     model.removeExpenseData(arr);
     return view.createHTML("eachList", element);
   
-  } else if (functionType == "removeElement") {    
+  }
+  else if (functionType == "insertElement")
+  {
+    var arr = {"element": postData.parameter.element, "value": postData.parameter.value};
+    // model.insertElement(arr);
+    return view.createHTML("list", null);
+  }
+  else if (functionType == "removeElement")
+  {
     model.removeElement(postData.parameter.element);
     return view.createHTML("list", null);
   
-  } else {
+  }
+  else
+  {
     return view.createHTML("add", null);
   }
 }

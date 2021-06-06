@@ -11,38 +11,27 @@
     <div class="container mx-auto">
       <div class="panel panel-default">
         <br>
-        <p class="h4">出費追加フォーム</p>
+        <p class="h4">出費項目追加フォーム</p>
+
         <div class="panel-body">
           <form class="form-horizontal" method="post" action="https://script.google.com/macros/s/AKfycbykc1FO_oZsrDzcdAadeL6LT94tmWAhNNZkdV-a854AevAOa5jOuuxsorYwA19up-2w/exec?page=list">
             <div class="collapse">
               <div class="col-sm-10">
-                <input class="form-control" type="text" name="functionType" value="insert">
-              </div>
-            </div>
-            <div class="form-group">
-              <div class="col-sm-10">
-                <select class="form-select" name="element" id="validationDefault01" required>
-                  <option selected disabled value="">出費項目</option>
-                  <?
-                      for (var i = 0; i<elements.length; i++){
-                        output._ = '<option value="' + elements[i] + '">' + elements[i] + '</option>';
-                      }
-                  ?>
-                </select>
-              </div>
-            </div>
-            
-            <div class="form-group">
-              <label class="col-sm-2 control-label">詳細</label>
-              <div class="col-sm-10">
-                <input class="form-control" type="text" name="expense" id="validationDefault02" required>
+                <input class="form-control" type="text" name="functionType" value="insertElement">
               </div>
             </div>
 
             <div class="form-group">
-              <label class="col-sm-2 control-label">金額（円）</label>
+              <label class="col-sm-2 control-label">出費項目</label>
               <div class="col-sm-10">
-                <input class="form-control" type="number" name="value"  id="validationDefault03" required>
+                <input class="form-control" type="text" name="element" id="validationDefault01" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">最大許容額（円）</label>
+              <div class="col-sm-10">
+                <input class="form-control" type="number" name="value" id="validationDefault03" required>
               </div>
             </div>
 
@@ -54,8 +43,5 @@
     </div>
   </body>
 </html>
-
-
-
 
 

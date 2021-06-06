@@ -140,6 +140,27 @@ function modelClass() {
     sheet.getRange( startRow, startColumn+1, numOfRow, numOfColumn ).setValues(newExpenseData);
   }
 
+  this.insertElement = function(data) {
+    // 出費項目の追加処理
+    
+  }
+
+  this.updateElement = function(data){
+    // data = {"oldElement": oldElement, "element": element, "expectedValue": expectedValue};
+    var oldElement = data["oldElement"];
+    var element = data["element"];
+    var expectedValue = data["expectedValue"];
+    Logger.log("expectedValue: " + expectedValue);
+    var column = this.getElementColumn(oldElement) + 1;
+    var row = this.getElementRow(oldElement) + 1;
+
+    var allData = sheet.getDataRange().getValues();
+    allData[row][ELEMENT_COLUMN] = element;
+    allData[row][EXPECTED_DATA_COLUMN] = expectedValue;
+    allData[0][column] = element;
+    sheet.getRange( 1, 1, allData.length, allData[0].length ).setValues(allData);
+  }
+
   this.removeElement = function(element) {
     // TODO: 関数を分ける．
     // スプレッドシートの左側から削除
@@ -223,6 +244,12 @@ function modelRemoveElementTest() {
   var model = new modelClass();
   var element = "テスト項目";
   model.removeElement(element);
+}
+
+function modelUpdateElementTest() {
+  var model = new modelClass();
+  var arr = {"oldElement": "テスト項目", "element": "テスト項目2", "expectedValue": 200};
+  model.updateElement(arr);
 }
 
 function test() {

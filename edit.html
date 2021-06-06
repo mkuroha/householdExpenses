@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <title>household Expenses</title>
+    <base target=”_top”>
+    <?!= include("css"); ?>
+  </head>
+  <body>
+    <?!= include("header"); ?>
+
+    <div class="container mx-auto">
+      <div class="row">
+        <table class="table table-striped">
+          <thead>
+          <tr>
+            <td><b>出費種類</b></td>
+            <td><b>最大許容額</b></td>
+            <td> </td>
+          </tr>
+          </thead>
+
+          <tbody>
+            <?
+                for (var i = 0; i<elements.length; i++){
+                  if(typeof expectedData[i] === "undefined"){
+                    tmpExpectedData = 0;
+                  }else{
+                    tmpExpectedData = expectedData[i];
+                  }
+                  output._ = '<tr><td>' + elements[i] + '</td><td>' + tmpExpectedData + '円</td><td>' + 
+                      '<div style="display:inline-flex">' + 
+                        '<form class="form-inline" method="post" action="https://script.google.com/macros/s/AKfycbykc1FO_oZsrDzcdAadeL6LT94tmWAhNNZkdV-a854AevAOa5jOuuxsorYwA19up-2w/exec?page=edit">' + 
+                          '<div class="collapse"><input type="text" name="functionType" value="transitEditElement"></div>' + 
+                          '<div class="collapse"><input type="text" name="element" value="' + elements[i] + '"></div>' + 
+                          '<div class="collapse"><input type="number" name="expectedValue" value="' + tmpExpectedData + '"></div>' + 
+                          '<button class="deleteBtn btn btn-dark btn-sm" type="submit">編集</button>' + 
+                        '</form>' + 
+                        '&nbsp;' + 
+                        '<form class="form-inline" method="post" action="https://script.google.com/macros/s/AKfycbykc1FO_oZsrDzcdAadeL6LT94tmWAhNNZkdV-a854AevAOa5jOuuxsorYwA19up-2w/exec?page=list">' + 
+                          '<div class="collapse"><input type="text" name="functionType" value="removeElement"></div>' + 
+                          '<div class="collapse"><input type="text" name="element" value="' + elements[i] + '"></div>' + 
+                          '<button class="deleteBtn btn btn-dark btn-sm" type="submit">削除</button>' + 
+                        '</form>' + 
+                      '</div>' + 
+                    '</td></tr>';
+                }
+            ?>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </body>
+</html>
+
+
