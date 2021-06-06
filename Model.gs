@@ -1,4 +1,7 @@
+var ELEMENT_COLUMN = 0;
+var EXPECTED_DATA_COLUMN = 3;
 var START_COLUMN = 5; // データを追加するスプレッドシートの領域
+
 
 function modelClass() {
   // スプレッドシート準備
@@ -11,6 +14,9 @@ function modelClass() {
       spreadsheet.insertSheet(getYearMonth);  // sheet作成
       sheet = spreadsheet.getSheetByName(getYearMonth);
   }
+
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // データ処理関数群
 
   this.findAll = function() {
     var allData = sheet.getDataRange().getValues();
@@ -31,7 +37,6 @@ function modelClass() {
     return output;
   }
 
-  // TODO: 一部関数化
   this.find = function(selector) {
     // 検索項目のインデックス取得
     var allData = sheet.getDataRange().getValues();
@@ -61,7 +66,17 @@ function modelClass() {
     return findArr;
   }
 
-  this.insertData = function(data) {
+  this.getExpectedVal = function(element) {
+    // 目標値1件取得メソッド
+    var elements = this.find("項目");
+    var expectedData = this.find("目標値");
+
+    var index = elements.indexOf(element);
+    return expectedData[index];
+  }
+
+  this.insertExpenseData = function(data) {
+    // TODO: 部分的なシート修正に変更？
     // data: {"element": element, "expense": expense, "value": value}
     var exData = sheet.getDataRange().getValues();
 
@@ -90,12 +105,93 @@ function modelClass() {
     var numOfColumn = exData[0].length;
     sheet.getRange( startRow, startColumn, numOfRow, numOfColumn ).setValues(exData);
   }
+
+  this.getElementRow = function(element) {
+    var elementData = this.find("項目");
+    return elementData.indexOf(element);
+  }
+
+  this.getElementColumn = function(element) {
+    // 出費項目が何列目か（"要素"の列）を返す
+    var allData = sheet.getDataRange().getValues();
+    return allData[0].indexOf(element)-1;
+  }
+
+  this.removeExpenseData = function(data) {
+    // data: {"element": 食費, "expenseIndex": 1}
+    var expenseData = this.find(data["element"]);
+    var startColumn = this.getElementColumn(data["element"]);
+    
+    // データ削除処理
+    var newExpenseData = [];
+    for (var i = 0; i < expenseData.length; i++) {
+      if (i == data["expenseIndex"]){  // インデックスが一致したら
+        ;
+      } else {
+        newExpenseData.push(expenseData[i]);
+      }
+    }
+    newExpenseData.push(["", ""]);
+
+    // newExpenseDataをシートに反映
+    var startRow = 2;
+    var numOfRow = newExpenseData.length;
+    var numOfColumn = newExpenseData[0].length;
+    sheet.getRange( startRow, startColumn+1, numOfRow, numOfColumn ).setValues(newExpenseData);
+  }
+
+  this.removeElement = function(element) {
+    // TODO: 関数を分ける．
+    // スプレッドシートの左側から削除
+    var elements = this.find("項目");
+    var index = elements.indexOf(element);
+    
+    // TODO: 小計も削除する？（小計をWebアプリ上で使ってはいない）
+    
+    // データを全部取ってきて更新
+    var allData = sheet.getDataRange().getValues();
+    var _ = Underscore.load();
+    var allDataTrans = _.zip.apply(_, allData);
+    var newallDataTrans = [];
+    var column = this.getElementColumn(element);
+    for (var i = 0; i < allDataTrans.length; i++){
+      if (i == column || i == column+1){
+        ;
+      }
+      else if (i == ELEMENT_COLUMN || i == ELEMENT_COLUMN+1 || i == EXPECTED_DATA_COLUMN) // 項目のところ
+      {
+        var newColumns = [];
+        for (var j = 0; j < allDataTrans[i].length; j++ ){
+          if (j != index+1) {
+            newColumns.push(allDataTrans[i][j]);
+          }
+        }
+        newColumns.push("");
+        newallDataTrans.push(newColumns)
+      } 
+      else
+      {
+        newallDataTrans.push(allDataTrans[i]);
+      }
+    }
+    var EmptyArr = [];
+    for (var i = 0; i < allData.length; i++){
+      EmptyArr.push("");
+    }
+    // 削除した2列分追加
+    newallDataTrans.push(EmptyArr);
+    newallDataTrans.push(EmptyArr);
+    var newAllData = _.zip.apply(_, newallDataTrans);
+
+    // シートに反映
+    sheet.getRange( 1, 1, newAllData.length, newAllData[0].length ).setValues(newAllData);
+  }
 }
 
-function tmpFunction() {
+function modelFindTest() {
   var model = new modelClass();
-  var arr3 = model.find("目標値");
-  Logger.log(arr3);
+  var arr = model.find("固定費");
+  Logger.log(arr);
 }
 
 function modelFindAllTest() {
@@ -116,6 +212,30 @@ function modelInsertTest() {
   var arr = {"element": "日用品費", "expense": "シャンプー", "value": 100}
   model.insertData(arr)
 }
+
+function modelRemoveExpenseDataTest() {
+  var model = new modelClass();
+  var arr = {"element": "食費", "expense": "test", "value": 200}
+  model.removeExpenseData(arr)
+}
+
+function modelRemoveElementTest() {
+  var model = new modelClass();
+  var element = "テスト項目";
+  model.removeElement(element);
+}
+
+function test() {
+  var test = [];
+  for (var i = 0; i < 5; i++){
+    test.push("");
+  }
+  Logger.log(test);
+}
+
+
+
+
 
 
 

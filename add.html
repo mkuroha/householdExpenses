@@ -6,30 +6,28 @@
     <?!= include("css"); ?>
   </head>
   <body>
-    <!-- ナビゲーションバー -->
     <?!= include("header"); ?>
 
-    <!-- 本体 -->
     <div class="container mx-auto">
       <div class="panel panel-default">
         <br>
-        <div class="panel-heading">出費追加フォーム</div>
+        <p class="h4">出費追加フォーム</p>
         <div class="panel-body">
           <form class="form-horizontal" method="post" action="https://script.google.com/macros/s/AKfycbykc1FO_oZsrDzcdAadeL6LT94tmWAhNNZkdV-a854AevAOa5jOuuxsorYwA19up-2w/exec?page=list">
+            <div class="collapse">
+              <div class="col-sm-10">
+                <input class="form-control" type="text" name="functionType" value="insert">
+              </div>
+            </div>
             <div class="form-group">
               <div class="col-sm-10">
-                <select class="form-select" name="element">
-                  <option selected>出費種類</option>
-                  <!-- TODO: 値をスプレッドシートから取得する -->
-                  <option value="固定費">固定費</option>
-                  <option value="食費">食費</option>
-                  <option value="交通費">交通費</option>
-                  <option value="日用品費">日用品費</option>
-                  <option value="交際費">交際費</option>
-                  <option value="趣味・娯楽費">趣味・娯楽費</option>
-                  <option value="雑費">雑費</option>
-                  <option value="臨時支出">臨時支出</option>
-                  <option value="収入">収入</option>
+                <select class="form-select" name="element" id="validationDefault01" required>
+                  <option selected disabled value="">出費項目</option>
+                  <?
+                      for (var i = 0; i<expenseItems.length; i++){
+                        output._ = '<option value="' + expenseItems[i] + '">' + expenseItems[i] + '</option>';
+                      }
+                  ?>
                 </select>
               </div>
             </div>
@@ -37,19 +35,19 @@
             <div class="form-group">
               <label class="col-sm-2 control-label">詳細</label>
               <div class="col-sm-10">
-                <input class="form-control" type="text" name="expense">
+                <input class="form-control" type="text" name="expense" id="validationDefault02" required>
               </div>
             </div>
 
             <div class="form-group">
               <label class="col-sm-2 control-label">金額（円）</label>
               <div class="col-sm-10">
-                <input class="form-control" type="text" name="value">
+                <input class="form-control" type="number" name="value"  id="validationDefault03" required>
               </div>
             </div>
 
-            <button class="btn btn-dark" type="submit">追加</button>
-            <button class="btn btn-dark" type="reset">リセット</button>
+            <button class="addBtn btn btn-dark" type="submit">追加</button>
+            <button class="resetBtn btn btn-dark" type="reset">リセット</button>
             </div>
           </form>
         </div>
@@ -57,3 +55,8 @@
     </div>
   </body>
 </html>
+
+
+
+
+

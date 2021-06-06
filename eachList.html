@@ -6,7 +6,6 @@
     <?!= include("css"); ?>
   </head>
   <body>
-    <!-- ナビゲーションバー -->
     <?!= include("header"); ?>
 
     <div class="container mx-auto">
@@ -14,16 +13,32 @@
         <table class="table table-striped">
           <thead>
             <tr>
-              <td><b><?=elementName?></b></td>
+              <td><b><?= elementName ?></b></td>
               <td><b>金額</b></td>
+              <td> </td>
             </tr>
           </thead>
           <tbody>
             <?
                 for (var i = 0; i<expenseData.length; i++){
-                  output._ = '<tr><td>' + expenseData[i][0] + '</td><td>' + expenseData[i][1] + '円</td></tr>';
+                  output._ = '<tr><td>' + expenseData[i][0] + '</td><td>' + expenseData[i][1] + '円</td><td>' + 
+                    '<form method="post" action="https://script.google.com/macros/s/AKfycbykc1FO_oZsrDzcdAadeL6LT94tmWAhNNZkdV-a854AevAOa5jOuuxsorYwA19up-2w/exec?page=' + elementName + '">' + 
+                      '<div class="collapse"><input type="text" name="functionType" value="remove"></div>' + 
+                      '<div class="collapse"><input type="text" name="element" value="' + elementName + '"></div>' + 
+                      '<div class="collapse"><input type="number" name="expenseIndex" value="' + i + '"></div>' + 
+                      '<button class="deleteBtn btn btn-dark btn-sm" type="submit">削除</button>' + 
+                    '</form></td></tr>';
                 }
             ?>
+            
+            <tr>
+              <td><b>合計</b></td>
+              <td><b><?= calcSumOfOneElement(expenseData); ?>円</b></td>
+            </tr>
+            <tr>
+              <td><b>最大許容額</b></td>
+              <td><b><?= expectedData ?>円</b></td>
+            </tr>
           </tbody>
           
         </table>

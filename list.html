@@ -6,8 +6,8 @@
     <?!= include("css"); ?>
   </head>
   <body>
-    <!-- ナビゲーションバー -->
     <?!= include("header"); ?>
+
     <div class="container mx-auto">
       <div class="row">
         <table class="table table-striped">
@@ -15,16 +15,33 @@
           <tr>
             <td><b>出費種類</b></td>
             <td><b>小計</b></td>
-            <td><b>目標値</b></td>
+            <td><b>最大許容額</b></td>
+            <td> </td>
           </tr>
           </thead>
 
           <tbody>
             <?
                 for (var i = 0; i<expenseItems.length; i++){
-                  output._ = '<tr><td><a href="https://script.google.com/macros/s/AKfycbykc1FO_oZsrDzcdAadeL6LT94tmWAhNNZkdV-a854AevAOa5jOuuxsorYwA19up-2w/exec?element=' + expenseItems[i] + '">' + expenseItems[i] + '</a></td><td>' + calcSum(expenseData[expenseItems[i]]) + '円</td><td>' + expectedData[i] + '円</td></tr>';
+                  if(typeof expectedData[i] === "undefined"){
+                    tmpExpectedData = 0;
+                  }else{
+                    tmpExpectedData = expectedData[i];
+                  }
+                  output._ = '<tr><td><a href="https://script.google.com/macros/s/AKfycbykc1FO_oZsrDzcdAadeL6LT94tmWAhNNZkdV-a854AevAOa5jOuuxsorYwA19up-2w/exec?page=' + expenseItems[i] + '">' + 
+                  expenseItems[i] + '</a></td><td>' + calcSum(expenseData[expenseItems[i]]) + '円</td><td>' + tmpExpectedData + '円</td><td>' +   
+                    '<form method="post" action="https://script.google.com/macros/s/AKfycbykc1FO_oZsrDzcdAadeL6LT94tmWAhNNZkdV-a854AevAOa5jOuuxsorYwA19up-2w/exec?page=list">' + 
+                      '<div class="collapse"><input type="text" name="functionType" value="removeElement"></div>' + 
+                      '<div class="collapse"><input type="text" name="element" value="' + expenseItems[i] + '"></div>' + 
+                      '<button class="deleteBtn btn btn-dark btn-sm" type="submit">削除</button>' + 
+                    '</form></td></tr>';
                 }
             ?>
+            <tr>
+              <td><b>合計</b></td>
+              <td><b><?= calcSumOfAll(expenseItems, expenseData); ?>円</b></td>
+              <td><b><?= calcSum(expectedData); ?>円</b></td>
+            </tr>
           </tbody>
         </table>
       </div>
