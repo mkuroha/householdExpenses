@@ -33,8 +33,8 @@ function doGet(e){
 function doPost(postData){
   var model = new modelClass(); // モデルのクラス．データの更新や削除を行う
   var view = new viewClass(); // ビューのクラス．HTMLの作成を行う
-
   var functionType = postData.parameter.functionType;
+
   // 処理振り分け
   if (functionType == "insert") 
   {
@@ -46,7 +46,6 @@ function doPost(postData){
     
     model.insertExpenseData(arr);
     return view.createHTML("list", null);
-
   }
   else if (functionType == "transitEditElement")
   {
@@ -57,6 +56,7 @@ function doPost(postData){
   }
   else if (functionType == "edit")
   {
+    // TODO: 値に変更がなかったらmodelを呼び出さないようにするべき？
     var oldElement = postData.parameter.oldElement;
     var element = postData.parameter.element;
     var expectedValue = postData.parameter.expectedValue; // 最大許容額
@@ -64,7 +64,6 @@ function doPost(postData){
     model.updateElement(arr);  // 更新
 
     return view.createHTML("list", null);
-  
   }
   else if (functionType == "remove")
   {
@@ -74,19 +73,22 @@ function doPost(postData){
     
     model.removeExpenseData(arr);
     return view.createHTML("eachList", element);
-  
   }
   else if (functionType == "insertElement")
   {
-    var arr = {"element": postData.parameter.element, "value": postData.parameter.value};
-    // model.insertElement(arr);
+    // parameter s とすることで，配列で複数の値を取得できる
+    var elements = postData.parameters.element;
+    var expectedValues = postData.parameters.expectedValue;
+    var arr = {"elements": elements, "expectedValues": expectedValues};
+    
+    model.insertElement(arr); // model呼び出し
+
     return view.createHTML("list", null);
   }
   else if (functionType == "removeElement")
   {
     model.removeElement(postData.parameter.element);
     return view.createHTML("list", null);
-  
   }
   else
   {

@@ -76,7 +76,6 @@ function modelClass() {
   }
 
   this.insertExpenseData = function(data) {
-    // TODO: 部分的なシート修正に変更？
     // data: {"element": element, "expense": expense, "value": value}
     var exData = sheet.getDataRange().getValues();
 
@@ -142,7 +141,36 @@ function modelClass() {
 
   this.insertElement = function(data) {
     // 出費項目の追加処理
+    // data = {"elements": elements, "expectedValues": expectedValues};
+    var elements = data["elements"];
+    var expectedValues = data["expectedValues"];
+    var tmpRow = this.find("項目");
+    var onlyLeftData = sheet.getRange(1, 1, tmpRow.length+1, 4).getValues();
+    for (var i = 0; i < elements.length; i++) {
+      onlyLeftData.push([elements[i], 0, "", expectedValues[i]]);
+    }
+    sheet.getRange(1, 1, onlyLeftData.length, 4).setValues(onlyLeftData);  // 反映
     
+    var allData = sheet.getDataRange().getValues();
+    var _ = Underscore.load();
+    var allDataTrans = _.zip.apply(_, allData);
+
+    for (var i = 0; i < elements.length * 2; i++) {
+      var tmpArr = [];
+      if (i % 2 == 0){
+        tmpArr.push("要素");
+      } else {
+        tmpArr.push(elements[Math.floor(i / 2)]);
+      }
+      
+      for (var j = 2; j < allData.length; j++){
+        tmpArr.push("");
+      }
+      allDataTrans.push(tmpArr);
+    }
+
+    var newAllData = _.zip.apply(_, allDataTrans);
+    sheet.getRange(1, 1, newAllData.length, newAllData[0].length).setValues(newAllData);  // 反映
   }
 
   this.updateElement = function(data){
@@ -150,7 +178,6 @@ function modelClass() {
     var oldElement = data["oldElement"];
     var element = data["element"];
     var expectedValue = data["expectedValue"];
-    Logger.log("expectedValue: " + expectedValue);
     var column = this.getElementColumn(oldElement) + 1;
     var row = this.getElementRow(oldElement) + 1;
 
@@ -246,6 +273,12 @@ function modelRemoveElementTest() {
   model.removeElement(element);
 }
 
+function modelInsertElementTest(){
+  var model = new modelClass();
+  var arr = {"elements": ["hoge", "test", "hogehoge"], "expectedValues": [100, 200, 300]};
+  model.insertElement(arr);
+}
+
 function modelUpdateElementTest() {
   var model = new modelClass();
   var arr = {"oldElement": "テスト項目", "element": "テスト項目2", "expectedValue": 200};
@@ -253,11 +286,22 @@ function modelUpdateElementTest() {
 }
 
 function test() {
-  var test = [];
-  for (var i = 0; i < 5; i++){
-    test.push("");
-  }
-  Logger.log(test);
+  var model = new modelClass();
+  var tmpRow = model.find("項目");
+
+  var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  var getYearMonth = getYearAndMonthOfToday()
+  var sheet = spreadsheet.getSheetByName(getYearMonth);
+
+  Logger.log(tmpRow.length);
+
+  var allData = sheet.getRange(1, 1, tmpRow.length+1, 4).getValues();
+  Logger.log("allData: " + allData);
+  Logger.log("allData.length: " + allData.length);
+  Logger.log("allData[0].length: " + allData[0].length);
+
+  Logger.log(8 % 2 == 0);
+  Logger.log(9 % 2 == 0);
 }
 
 
