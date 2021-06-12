@@ -1,14 +1,3 @@
-function getYearAndLastMonth(){
-  var today = new Date();
-  today.setMonth(today.getMonth() - 1);
-  var todayLastYear = today.getFullYear().toString();
-  var todayLastMonth = today.getMonth() + 1;
-  if (todayLastMonth.toString().length == 1){
-    todayLastMonth = "0" + todayLastMonth;
-  }
-  return todayLastYear + todayLastMonth;
-}
-
 function getYearAndMonthOfToday(){
   var today = new Date();
   // today.setMonth(today.getMonth() - 1);
@@ -18,21 +7,6 @@ function getYearAndMonthOfToday(){
     todayMonth = "0" + todayMonth;
   }
   return todayYear + todayMonth;
-}
-
-function createLogDate() {
-  // 不要になった関数
-  var today = new Date();
-  var todayYear = today.getFullYear().toString();
-  var todayMonth = today.getMonth() + 1;
-  if (todayMonth.toString().length == 1){
-    todayMonth = "0" + todayMonth
-  }
-  var todayDate = today.getDate();
-  if (todayDate.toString().length == 1){
-    todayDate = "0" + todayDate;
-  }
-  return todayYear + "/" + todayMonth + "/" + todayDate;
 }
 
 function calcSum(arr){
@@ -60,13 +34,9 @@ function calcSumOfAll(items, expenses){
   return expenseSum;
 }
 
-function calcSumOfAllTest() {
-  var model = new modelClass();
-  var expenseItems = model.find("項目");
-  var expenseData = model.findAll();
-  var result = calcSumOfAll(expenseItems, expenseData);
-  Logger.log(result);
-  
+function include(filename) {
+  // htmlの内容を文字列で取得する．css.htmlを取得して反映させる．
+  return HtmlService.createHtmlOutputFromFile(filename).getContent();
 }
 
 function calcSumOfElement(dat){
@@ -79,10 +49,19 @@ function calcSumOfElement(dat){
   return expenseSum;
 }
 
-function include(filename) {
-  // htmlの内容を文字列で取得する．css.htmlを取得して反映させる．
-  return HtmlService.createHtmlOutputFromFile(filename).getContent();
+////////////////////////////////////////////////////////////////////////
+// テスト関数
+
+function calcSumOfAllTest() {
+  var model = new modelClass();
+  var expenseItems = model.find("項目");
+  var expenseData = model.findAll();
+  var result = calcSumOfAll(expenseItems, expenseData);
+  Logger.log(result);
+  
 }
+
+
 
 
 

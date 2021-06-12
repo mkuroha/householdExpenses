@@ -1,7 +1,6 @@
 var ELEMENT_COLUMN = 0;
 var EXPECTED_DATA_COLUMN = 3;
-var START_COLUMN = 5; // データを追加するスプレッドシートの領域
-
+var START_COLUMN = 5; // データを追加するスプレッドシートの領域のスタートカラム
 
 function modelClass() {
   // スプレッドシート準備
@@ -77,32 +76,22 @@ function modelClass() {
 
   this.insertExpenseData = function(data) {
     // data: {"element": element, "expense": expense, "value": value}
-    var exData = sheet.getDataRange().getValues();
 
-    // 出費費用のインデックスを特定
-    var addColumnIdx = 0;
-    for (var j = START_COLUMN; j < exData[0].length; j++) {
-      if (exData[0][j] == data["element"]) {
-        addColumnIdx = j;
-        break;
-      }
-    }
+    // 出費費用のインデックスを取得
+    var addColumnIdx = this.getElementColumn(data["element"]);
 
-    // addColumnIdxの列の，最初の空のところにデータを追加
-    for (var i=0; i < exData.length; i++) {
-      if (exData[i][addColumnIdx] == ""){
-        exData[i][addColumnIdx-1] = data["expense"];
-        exData[i][addColumnIdx] = data["value"];
-        break;
+    // insertするデータ部分だけ取得
+    var onlyInsertData = sheet.getRange(1, addColumnIdx+1, 1000, addColumnIdx+2).getValues();
+    for (var i=0; i < onlyInsertData.length; i++){
+      if (onlyInsertData[i][1] == ""){
+        onlyInsertData[i][0] = data["expense"];
+        onlyInsertData[i][1] = data["value"];
+        break
       }
     }
 
     // 追加データをシートに反映
-    var startRow = 1;
-    var startColumn = 1;
-    var numOfRow = exData.length;
-    var numOfColumn = exData[0].length;
-    sheet.getRange( startRow, startColumn, numOfRow, numOfColumn ).setValues(exData);
+    sheet.getRange(1, addColumnIdx+1, 1000, addColumnIdx+2).setValues(onlyInsertData);
   }
 
   this.getElementRow = function(element) {
@@ -236,6 +225,9 @@ function modelClass() {
   }
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// テスト関数
+
 function modelFindTest() {
   var model = new modelClass();
   var arr = model.find("固定費");
@@ -250,15 +242,14 @@ function modelFindAllTest() {
 
 function modelFindWithSelectorTest() {
   var model = new modelClass();
-  // var arr = model.find("日用品費");
   var arr2 = model.find("目標値");
   Logger.log(arr2);
 }
 
-function modelInsertTest() {
+function modelInsertExpenseDataTest() {
   var model = new modelClass();
-  var arr = {"element": "日用品費", "expense": "シャンプー", "value": 100}
-  model.insertData(arr)
+  var arr = {"element": "食費", "expense": "ジャパンミート", "value": 1158}
+  model.insertExpenseData(arr)
 }
 
 function modelRemoveExpenseDataTest() {
@@ -284,37 +275,3 @@ function modelUpdateElementTest() {
   var arr = {"oldElement": "テスト項目", "element": "テスト項目2", "expectedValue": 200};
   model.updateElement(arr);
 }
-
-function test() {
-  var model = new modelClass();
-  var tmpRow = model.find("項目");
-
-  var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
-  var getYearMonth = getYearAndMonthOfToday()
-  var sheet = spreadsheet.getSheetByName(getYearMonth);
-
-  Logger.log(tmpRow.length);
-
-  var allData = sheet.getRange(1, 1, tmpRow.length+1, 4).getValues();
-  Logger.log("allData: " + allData);
-  Logger.log("allData.length: " + allData.length);
-  Logger.log("allData[0].length: " + allData[0].length);
-
-  Logger.log(8 % 2 == 0);
-  Logger.log(9 % 2 == 0);
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

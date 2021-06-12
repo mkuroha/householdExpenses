@@ -5,27 +5,23 @@ function doGet(e){
 
   // HTML 振り分け
   if(pageName == null){
-    return view.createHTML("add", null);
+    return view.createAddHtml();
   }
   else if(pageName == "list")
   {
-    return view.createHTML("list", null);
+    return view.createListHtml();
   }
   else if (pageName == "edit")
   {
-    return view.createHTML("edit", null);
+    return view.createEditHtml();
   }
   else if (pageName == "addElement")
   {
-    return view.createHTML("addElement", null);
-  }
-  else if (pageName == "editElement")
-  {
-    return view.createHTML("editElement", null);
+    return view.createAddElementHtml();
   }
   else
   {
-    return view.createHTML("eachList", pageName);
+    return view.createEachElementHtml(pageName);
   }
 }
 
@@ -45,25 +41,24 @@ function doPost(postData){
     var arr = {"element": element, "expense": expense, "value": value};
     
     model.insertExpenseData(arr);
-    return view.createHTML("list", null);
+    return view.createListHtml();
   }
   else if (functionType == "transitEditElement")
   {
     var element = postData.parameter.element;  // 出費項目
     var expectedValue = postData.parameter.expectedValue; // 最大許容額
     var params = {"element": element, "expectedValue": expectedValue};
-    return view.createHTML("editElement", params);
+    return view.createEditElementHtml(params);
   }
   else if (functionType == "edit")
   {
-    // TODO: 値に変更がなかったらmodelを呼び出さないようにするべき？
     var oldElement = postData.parameter.oldElement;
     var element = postData.parameter.element;
     var expectedValue = postData.parameter.expectedValue; // 最大許容額
     var arr = {"oldElement": oldElement, "element": element, "expectedValue": expectedValue};
     model.updateElement(arr);  // 更新
 
-    return view.createHTML("list", null);
+    return view.createListHtml();
   }
   else if (functionType == "remove")
   {
@@ -72,7 +67,7 @@ function doPost(postData){
     var arr = {"element": element, "expenseIndex": expenseIndex};
     
     model.removeExpenseData(arr);
-    return view.createHTML("eachList", element);
+    return view.createEachElementHtml(element);
   }
   else if (functionType == "insertElement")
   {
@@ -81,18 +76,18 @@ function doPost(postData){
     var expectedValues = postData.parameters.expectedValue;
     var arr = {"elements": elements, "expectedValues": expectedValues};
     
-    model.insertElement(arr); // model呼び出し
+    model.insertElement(arr);
 
-    return view.createHTML("list", null);
+    return view.createListHtml();
   }
   else if (functionType == "removeElement")
   {
     model.removeElement(postData.parameter.element);
-    return view.createHTML("list", null);
+    return view.createListHtml();
   }
   else
   {
-    return view.createHTML("add", null);
+    return view.createAddHtml();
   }
 }
 
